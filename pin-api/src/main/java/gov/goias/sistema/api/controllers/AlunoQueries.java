@@ -91,15 +91,17 @@ public class AlunoQueries {
                         columns
                 )));
             }
-            dtr.setRecordsFiltered(qtFiltrada);
-            dtr.setData(res);
-            dtr.setRecordsTotal(qtTotal);
         } catch (Exception e) {
             //log.error(e);
             //dtr.setError(GoiasResourceMessage.getMessage("msg_erro_dessconhecido"));
         }
 
-       return Response.status(Response.Status.OK).entity(dtr).build();
+       return Response.status(Response.Status.OK).header("Content-Range", formatResponsePageRange(start, end, total)).entity(dtr).build();
     }
 
+    private String formatResponsePageRange(int start, int end, int total)
+    {
+        return start + "-" + end + "/" + total;
+    }
+ 
 }
