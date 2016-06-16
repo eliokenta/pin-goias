@@ -1,4 +1,4 @@
-package gov.goias.sistema.api.rep.v1;
+package gov.goias.sistema.api.view.model;
 
 import io.swagger.annotations.*;
 
@@ -72,15 +72,4 @@ public class Aluno {
     public void setAtivo(final Boolean ativo) {
         this.ativo = ativo;
     }
-
-    public static final String version = "v1";
-
-    public final static String schemaName = "aluno" + version;
-
-    public final static String xml =
-            "application/gov.goias.sistema.api.rep.aluno-" + version + "+xml";
-
-    public final static String json =
-            "application/gov.goias.sistema.api.rep.aluno-" + version + "+json";
-
 }

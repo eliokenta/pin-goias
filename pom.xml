@@ -134,6 +134,19 @@
                 <version>${org.glassfish.jersey.version}</version>
             </dependency>
 
+            <!--
+            <dependency>
+                <groupId>gov.goias</groupId>
+                <artifactId>goias-excecao</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+-->
+
+            <dependency>
+                <groupId>io.javaslang</groupId>
+                <artifactId>javaslang</artifactId>
+                <version>2.0.1</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

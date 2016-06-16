@@ -38,7 +38,8 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>
                 io.swagger.jaxrs.listing,
-                gov.goias.sistema.api.routes.v1
+                gov.goias.sistema.api.controllers,
+                gov.goias.sistema.api.mappers
             </param-value>
         </init-param>
         <init-param>

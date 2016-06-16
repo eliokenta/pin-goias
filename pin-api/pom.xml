@@ -144,7 +144,12 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
         </dependency>
-
+<!--
+        <dependency>
+            <groupId>gov.goias</groupId>
+            <artifactId>goias-excecao</artifactId>
+        </dependency>
+-->
     </dependencies>
 
     <build>

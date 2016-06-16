@@ -45,6 +45,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--
+        <dependency>
+            <groupId>gov.goias</groupId>
+            <artifactId>goias-excecao</artifactId>
+        </dependency>
+-->
+
+        <dependency>
+            <groupId>io.javaslang</groupId>
+            <artifactId>javaslang</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

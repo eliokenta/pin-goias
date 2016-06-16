@@ -1,6 +1,6 @@
 package gov.goias.sistema.api.mappers;
 
-import gov.goias.sistema.api.rep.v1.Aluno;
+import gov.goias.sistema.api.view.model.Aluno;
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.dozer.loader.api.TypeMappingOptions;
@@ -10,7 +10,7 @@ import static org.dozer.loader.api.TypeMappingOptions.mapNull;
 
 public class AlunoModelMapper {
 
-    public static DozerBeanMapper getV1Mapper() {
+    public static DozerBeanMapper getMapper() {
 
         final DozerBeanMapper mapper = new DozerBeanMapper();
         final BeanMappingBuilder b = new BeanMappingBuilder() {
