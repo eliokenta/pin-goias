@@ -1,11 +1,57 @@
 package gov.goias.sistema.repositories;
 
 import gov.goias.sistema.entidades.Aluno;
-import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
+import javax.inject.Named;
+import java.util.*;
 
+@Named
+public class AlunoRepository {
 
-public interface AlunoRepository extends CrudRepository<Aluno, Integer> {
-    Optional<Aluno> findById(Integer id);
+    private Map<Integer, Aluno> dbAluno;
+
+    public AlunoRepository()
+    {
+        dbAluno = new HashMap<>();
+
+        for (Integer i=0; i<20; i++)
+        {
+            Aluno aluno = new Aluno(i, "Aluno-" + i, new Date(), "1",  true);
+            dbAluno.put(i, aluno);
+        }
+    }
+
+    public Optional<Aluno> findById(Integer id)
+    {
+        return Optional.ofNullable(dbAluno.get(id));
+    }
+
+    public Optional<Aluno> save(Aluno aluno)
+    {
+        dbAluno.put(aluno.getId(), aluno);
+        return Optional.of(aluno);
+    }
+
+    public Optional<Aluno> update(Aluno aluno)
+    {
+        dbAluno.put(aluno.getId(), aluno);
+        return Optional.of(aluno);
+    }
+
+    public void delete(Aluno aluno)
+    {
+        dbAluno.remove(aluno.getId());
+    }
+
+    public Integer obtemQuantidadeTotalRegistros()
+    {
+        return dbAluno.size();
+    }
+
+    public Optional<List<Aluno>> listarAlunos(Integer offset, Integer limit)
+    {
+        List<Aluno> lista = new ArrayList<>(dbAluno.values());
+
+        return Optional.of(lista.subList(offset, offset + limit));
+    }
 }

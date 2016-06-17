@@ -55,19 +55,14 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-beans</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-core</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>net.sf.dozer</groupId>
@@ -85,6 +80,12 @@
             <artifactId>log4j</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.javaslang</groupId>
+            <artifactId>javaslang</artifactId>
+        </dependency>
+
 
         <!-- APIs Swagger -->
         <dependency>
@@ -144,12 +145,6 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>gov.goias</groupId>
-            <artifactId>goias-excecao</artifactId>
-        </dependency>
--->
     </dependencies>
 
     <build>

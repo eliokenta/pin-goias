@@ -1,36 +1,30 @@
 package gov.goias.sistema.api.controllers;
 
-import gov.goias.sat2.representation.DataTableResponse;
 import gov.goias.sistema.api.mappers.AlunoModelMapper;
 import gov.goias.sistema.api.view.model.Aluno;
 import gov.goias.sistema.exception.NaoEncontradoException;
 import gov.goias.sistema.negocio.AlunoService;
 import io.swagger.annotations.*;
 import org.dozer.DozerBeanMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Path("/aluno")
+@Api(value = "Query em Aluno", description = "Operações consulta de Aluno")
 public class AlunoQueries {
 
     @Context
     protected HttpServletRequest request;
 
-    @Autowired
-    AlunoService service;
-
-    @Autowired
+    @Inject
     private AlunoService alunoService;
 
     private DozerBeanMapper mapper = AlunoModelMapper.getMapper();
@@ -66,42 +60,55 @@ public class AlunoQueries {
     @GET
     @Path("/listar")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response list(@QueryParam("search[value]") final String searchValue,
-                         @QueryParam("limit")   final Integer limit,
-                         @QueryParam("offset")  final Integer offset) {
-        final List<Aluno> res = new ArrayList<Aluno>();
-        final String[] columns = new String[]{"id", "nome","email"};
-        try {
-            final Integer qtTotal = new Long(service.contarTodos()).intValue();
+    @ApiOperation(value = "Obtem uma lista de alunos.", notes = "Obtém uma lista de alunos paginada.", extensions = {
+            @Extension(name = "x-mask", properties = {
+                    @ExtensionProperty(name = "nascimento", value = "dd/MM/yyyy")
+            })
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sem paginação (todos os dados foram retornados)."),
+            @ApiResponse(code = 204, message = "Sem retorno de dados."),
+            @ApiResponse(code = 206, message = "Existe paginação (a quantidade total é maior que o limit informado)."),
+            @ApiResponse(code = 406, message = "Intervalo solicitado inválido."),
+            @ApiResponse(code = 500, message = "Erro interno.")
+    })
+    public Response list(@QueryParam("filtroPesquisaNome") final String filtroPesquisaNome,
+                         @QueryParam("offset") final Integer offset,
+                         @QueryParam("limit") final Integer limit) {
 
-            final Map<String, String> searchParams = new HashMap<>();
+        Integer total = alunoService.obtemQuantidadeTotalRegistros();
+        Optional<List<gov.goias.sistema.entidades.Aluno>> listaAluno = alunoService.listarAlunos(offset, limit);
 
-            if (!searchValue.isEmpty()) {
-                searchParams.put(columns[1], searchValue);
-            }
+        listaAluno.filter(a -> a.isEmpty()).map(a -> {
+            return Response.status(Response.Status.NO_CONTENT).header("Content-Range", formatResponsePageRange(offset, offset, total)).entity(converteListaAluno(a)).build();
+        });
 
-            final Integer page = new Double(Math.ceil(start / length)).intValue();
-            final Page<Aluno> list = service.listarTodos(new PageRequest(page, length)).map(a -> Aluno.from(a)) ; //searchValue.isEmpty() ? service.listarTodos(new PageRequest(page, length)) : service.listarTodos(new PageRequest(page, length)))); //service.queryFirst10ByName(searchValue, new PageRequest(page, length));
-            final Integer qtFiltrada = new Long(list.getTotalElements()).intValue();
-            if (qtFiltrada > 0) {
-                list.forEach(a -> res.add(a.asMapofValues(
-                        (Object v) -> String.format("row_%s", v),
-                        "DT_RowId",
-                        "id",
-                        columns
-                )));
-            }
-        } catch (Exception e) {
-            //log.error(e);
-            //dtr.setError(GoiasResourceMessage.getMessage("msg_erro_dessconhecido"));
-        }
+        listaAluno.filter(a -> !a.isEmpty()).map(a -> {
+            return Response.status(Response.Status.PARTIAL_CONTENT).header("Content-Range", formatResponsePageRange(offset, offset + a.size(), total)).entity(converteListaAluno(a)).build();
+        });
 
-       return Response.status(Response.Status.OK).header("Content-Range", formatResponsePageRange(start, end, total)).entity(dtr).build();
+        listaAluno.filter(a -> !a.isEmpty()).filter(a -> a.size() < limit).map(a -> {
+            return Response.status(Response.Status.OK).header("Content-Range", formatResponsePageRange(offset, a.size(), total)).entity(converteListaAluno(a)).build();
+        });
+
+
+        return Response.status(Response.Status.OK).header("Content-Range", formatResponsePageRange(offset, listaAluno.get().size() - 1, total)).entity(converteListaAluno(listaAluno.get())).build();
     }
 
-    private String formatResponsePageRange(int start, int end, int total)
-    {
+    private String formatResponsePageRange(Integer start, Integer end, Integer total) {
         return start + "-" + end + "/" + total;
     }
- 
+
+    private List<Aluno> converteListaAluno(List<gov.goias.sistema.entidades.Aluno> listaAluno) {
+        List<Aluno> res = new ArrayList<Aluno>();
+
+        listaAluno.forEach(a -> {
+            Aluno alunoView = new Aluno();
+            mapper.map(a, alunoView);
+            res.add(alunoView);
+        });
+
+        return res;
+    }
+
 }

@@ -35,31 +35,23 @@ public class AlunoCmds {
     private DozerBeanMapper mapper = AlunoModelMapper.getMapper();
 
     /**
-     * Consulta gov.goias.sistema.rep.v1.Aluno
+     * Armazena um Aluno no sistema.
      *
-     * @param id Identificador do aluno
-     * @return HTTP 200 - OK
-     * Retorna Aluno
+     * @param aluno Informações do aluno
      */
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Obtem o aluno.", notes = "Obtem o aluno a partir do ID.", extensions = {
-            @Extension(name = "x-mask", properties = {
-                    @ExtensionProperty(name = "nascimento", value = "dd/MM/yyyy")
-            })
-    })
+    @PUT
+    @Path("/salvar")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Armazena o registro do aluno.", notes = "Armazena o registro do aluno na base de dados.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK.", response = Aluno.class),
-            @ApiResponse(code = 404, message = "Aluno não encontrado."),
+            @ApiResponse(code = 200, message = "OK."),
             @ApiResponse(code = 500, message = "Erro interno.")
     })
-    public Response consultar(@PathParam("id") Integer id) {
-        Aluno alunoVo = new Aluno();
-        gov.goias.sistema.entidades.Aluno aluno = alunoService.consultar(id).orElseThrow(() -> new NaoEncontradoException("Aluno não encontrado."));
+    public Response salvar(Aluno aluno) {
+        gov.goias.sistema.entidades.Aluno a = mapper.map(aluno, gov.goias.sistema.entidades.Aluno.class);
+        alunoService.salvar(a);
 
-        mapper.map(aluno, alunoVo);
-        return Response.ok(alunoVo).build();
+        return Response.ok().build();
     }
 
     /**
@@ -68,15 +60,15 @@ public class AlunoCmds {
      * @param id Identificador do aluno
      */
     @PUT
-    @Path("/alterar")
+    @Path("/alterar/{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     @ApiOperation(value = "Atualiza o registro do aluno.", notes = "Atualiza o registro do aluno a partir do ID.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK."),
             @ApiResponse(code = 500, message = "Erro interno.")
     })
-    public Response alterar(Aluno recurso, @PathParam("id") Integer id) {
-        gov.goias.sistema.entidades.Aluno a = mapper.map(recurso, gov.goias.sistema.entidades.Aluno.class);
+    public Response alterar(Aluno aluno, @PathParam("id") Integer id) {
+        gov.goias.sistema.entidades.Aluno a = mapper.map(aluno, gov.goias.sistema.entidades.Aluno.class);
         a.setId(id);
         alunoService.alterar(a);
 

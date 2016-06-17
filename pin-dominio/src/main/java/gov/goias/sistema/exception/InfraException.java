@@ -8,6 +8,10 @@ public class InfraException extends RuntimeException {
     public InfraException() {
     }
 
+    public InfraException(String message) {
+        super(message);
+    }
+
     public InfraException(Throwable cause) {
         super(cause);
     }
