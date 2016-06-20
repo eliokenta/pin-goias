@@ -79,20 +79,13 @@ public class AlunoQueries {
         Integer total = alunoService.obtemQuantidadeTotalRegistros();
         Optional<List<gov.goias.sistema.entidades.Aluno>> listaAluno = alunoService.listarAlunos(offset, limit);
 
-        listaAluno.filter(a -> a.isEmpty()).map(a -> {
-            return Response.status(Response.Status.NO_CONTENT).header("Content-Range", formatResponsePageRange(offset, offset, total)).entity(converteListaAluno(a)).build();
-        });
+        List<Aluno> alunos = converteListaAluno(listaAluno.orElseGet(() -> new ArrayList<gov.goias.sistema.entidades.Aluno>()));
 
-        listaAluno.filter(a -> !a.isEmpty()).map(a -> {
-            return Response.status(Response.Status.PARTIAL_CONTENT).header("Content-Range", formatResponsePageRange(offset, offset + a.size(), total)).entity(converteListaAluno(a)).build();
-        });
+        Integer queryOffset = Optional.ofNullable(offset).orElseGet(() -> new Integer(0));
 
-        listaAluno.filter(a -> !a.isEmpty()).filter(a -> a.size() < limit).map(a -> {
-            return Response.status(Response.Status.OK).header("Content-Range", formatResponsePageRange(offset, a.size(), total)).entity(converteListaAluno(a)).build();
-        });
+        Response.Status status = (alunos.size() == 0 ? Response.Status.NO_CONTENT : ((alunos.size() + queryOffset < total ? Response.Status.PARTIAL_CONTENT : Response.Status.OK)));
 
-
-        return Response.status(Response.Status.OK).header("Content-Range", formatResponsePageRange(offset, listaAluno.get().size() - 1, total)).entity(converteListaAluno(listaAluno.get())).build();
+        return Response.status(status).header("Content-Range", formatResponsePageRange(queryOffset, queryOffset + listaAluno.get().size(), total)).entity(alunos).build();
     }
 
     private String formatResponsePageRange(Integer start, Integer end, Integer total) {

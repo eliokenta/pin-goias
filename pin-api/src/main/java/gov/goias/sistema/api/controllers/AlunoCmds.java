@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -91,6 +92,23 @@ public class AlunoCmds {
     public Response excluir(@PathParam("id") Integer id) {
         alunoService.excluir(id);
 
+        return Response.ok().build();
+    }
+
+    /**
+     * Operação para retorno de Erro de Acesso
+     *
+     */
+    @DELETE
+    @Path("/noaccess")
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Apresenta um erro de permissão ao requisitante.", notes = "Apresenta um erro de permissão.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, message = "Não autorizado."),
+            @ApiResponse(code = 500, message = "Erro interno.")
+    })
+    @RolesAllowed(value = "usuarioSemPermissao")
+    public Response semPermissao() {
         return Response.ok().build();
     }
 

@@ -46,6 +46,11 @@
             <param-name>jersey.config.server.wadl.disableWadl</param-name>
             <param-value>true</param-value>
         </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory</param-value>
+        </init-param>
+
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -73,5 +78,18 @@
         <servlet-name>WebApp</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/api/aluno/noaccess</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>noaccessrole</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>default</realm-name>
+    </login-config>
 
 </web-app>

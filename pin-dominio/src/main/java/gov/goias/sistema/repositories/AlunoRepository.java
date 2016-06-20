@@ -51,6 +51,8 @@ public class AlunoRepository {
     public Optional<List<Aluno>> listarAlunos(Integer offset, Integer limit)
     {
         List<Aluno> lista = new ArrayList<>(dbAluno.values());
+        offset = Optional.ofNullable(offset).orElseGet(() -> new Integer(0));
+        limit = Optional.ofNullable(limit).orElseGet(() -> lista.size());
 
         return Optional.of(lista.subList(offset, offset + limit));
     }
