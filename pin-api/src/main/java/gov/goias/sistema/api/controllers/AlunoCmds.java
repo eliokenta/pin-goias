@@ -1,10 +1,12 @@
 package gov.goias.sistema.api.controllers;
 
-import gov.goias.sistema.api.view.model.Aluno;
 import gov.goias.sistema.api.mappers.AlunoModelMapper;
-import gov.goias.sistema.exception.NaoEncontradoException;
+import gov.goias.sistema.api.view.model.Aluno;
 import gov.goias.sistema.negocio.AlunoService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.log4j.Logger;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/aluno")
-@Api(description = "Operações CRUD de Aluno")
+@Api(value = "Operações de CRUD em Aluno", description = "Operações CRUD de Aluno")
 public class AlunoCmds {
     private static final Logger log = Logger.getLogger(AlunoCmds.class);
 

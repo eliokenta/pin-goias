@@ -41,7 +41,8 @@ public class AlunoQueries {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Obtem o aluno.", notes = "Obtem o aluno a partir do ID.", extensions = {
             @Extension(name = "x-mask", properties = {
-                    @ExtensionProperty(name = "nascimento", value = "dd/MM/yyyy")
+                    @ExtensionProperty(name = "nascimento", value = "dd/MM/yyyy"),
+                    @ExtensionProperty(name = "id", value = "00000000")
             })
     })
     @ApiResponses(value = {
